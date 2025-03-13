@@ -13,12 +13,12 @@ router.post("/signup", async (req, res) => {
     console.log(req.body);
     const body = userSchema.safeParse(req.body);
     if (body.success) {
-        const succes = await addUser(body.data);
-        if (!succes) { 
+        const id = await addUser(body.data);
+        if (id == null) { 
             res.status(411).json({message: "Username already exists"});
             return
         }
-        const token = jwt.sign({username: body.data.username}, JWT_SECRET);
+        const token = jwt.sign({_id: id}, JWT_SECRET);
         res.json({message: "User created", token: token});
     }
     else {
@@ -39,7 +39,7 @@ router.post("/signin", async (req, res) => {
             res.status(411).json({message: "Invalid password"});
             return
         }
-        const token = jwt.sign({username: user.username}, JWT_SECRET);
+        const token = jwt.sign({_id: user._id}, JWT_SECRET);
         res.json({message: "Signin successful", token: token});
     }
 })

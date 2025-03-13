@@ -8,10 +8,10 @@ async function addUser(user) {
     if (newUser == null) {
         const newUser = new User(user);
         await newUser.createHash();
-        await newUser.save();
-        return true;
+        const data = await newUser.save();
+        return data._id;
     }
-    return false;
+    return null;
 }
 
 async function getUser(username) {
