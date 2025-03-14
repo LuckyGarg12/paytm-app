@@ -10,7 +10,6 @@ router.use(cors());
 router.use(express.json());
 
 router.post("/signup", async (req, res) => {
-    console.log(req.body);
     const body = userSchema.safeParse(req.body);
     if (body.success) {
         const id = await addUser(body.data);
