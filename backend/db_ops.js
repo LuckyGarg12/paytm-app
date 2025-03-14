@@ -32,8 +32,20 @@ async function updateUser(userId, update) {
     }
 }
 
+async function searchUsers(userId, filter) {
+    try {
+        const users = await User.find().or([{firstName:{"$regex": filter}}, {lastName:{"$regex":filter}}]).ne("_id", userId).exec();
+        return users;        
+    }
+    catch(err) {
+        console.log(err);
+        return null;
+    }
+}
+
 module.exports = {
     addUser: addUser,
     getUser: getUser,
-    updateUser: updateUser
+    updateUser: updateUser,
+    searchUsers:searchUsers
 }

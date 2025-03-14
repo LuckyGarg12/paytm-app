@@ -3,22 +3,22 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const { userSchema, signinSchema, updateUserSchema } = require("../schemas");
-const { addUser, getUser, updateUser } = require("../db_ops");
+const { addUser, getUser, updateUser, searchUsers } = require("../db_ops");
 const { authMiddleware } = require("../middleware");
 
 router.post("/signup", async (req, res) => {
     const body = userSchema.safeParse(req.body);
     if (body.success) {
         const id = await addUser(body.data);
-        if (id == null) { 
-            res.status(411).json({message: "Username already exists"});
+        if (id == null) {
+            res.status(411).json({ message: "Username already exists" });
             return
         }
-        const token = jwt.sign({_id: id}, JWT_SECRET);
-        res.json({message: "User created", token: token});
+        const token = jwt.sign({ _id: id }, JWT_SECRET);
+        res.json({ message: "User created", token: token });
     }
     else {
-        res.status(411).json({message: "Invalid data"});
+        res.status(411).json({ message: "Invalid data" });
     }
 })
 
@@ -27,32 +27,51 @@ router.post("/signin", async (req, res) => {
     if (body.success) {
         const user = await getUser(body.data.username);
         if (user == null) {
-            res.status(411).json({message: "User not found"});
+            res.status(411).json({ message: "User not found" });
             return
         }
         const match = await user.verifyPassword(body.data.password);
         if (!match) {
-            res.status(411).json({message: "Invalid password"});
+            res.status(411).json({ message: "Invalid password" });
             return
         }
-        const token = jwt.sign({_id: user._id}, JWT_SECRET);
-        res.json({message: "Signin successful", token: token});
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+        res.json({ message: "Signin successful", token: token });
     }
 })
 
-router.put("/update", authMiddleware, async (req, res)=> {
+router.put("/update", authMiddleware, async (req, res) => {
     const body = updateUserSchema.safeParse(req.body);
     if (body.success) {
         const success = await updateUser(req.userId, body.data);
         if (success) {
             res.send({
-                "message":"Updated successfully"
+                "message": "Updated successfully"
             })
             return
         }
     }
     res.status(411).json({
-        "Error":"Could not update. Check the input."
+        "Error": "Could not update. Check the input."
+    })
+})
+
+router.get("/search", authMiddleware, async (req, res) => {
+    const filter = req.query.filter || "";
+    const users = await searchUsers(req.userId, filter);
+    if (users) {
+        res.send({
+            "users": users.map(user => ({
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                _id: user._id
+            }))
+        });
+        return;
+    }
+    res.status(411).json({
+        "message": "No results found"
     })
 })
 
