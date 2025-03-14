@@ -18,8 +18,14 @@ const updateUserSchema = zod.object({
     lastName: zod.string().min(1).max(20).optional()
 })
 
+const transferSchema = zod.object({
+    to: zod.string(),
+    amount: zod.number()
+})
+
 module.exports = {
-    userSchema: userSchema,
-    signinSchema: signinSchema,
-    updateUserSchema: updateUserSchema
+    userSchema,
+    signinSchema,
+    updateUserSchema,
+    transferSchema
 }
