@@ -6,9 +6,9 @@ const app = express();
 app.use(express.json())
 
 app.get("/testAuth", authMiddleware, (req, res) => {
-    console.log(req.body);
+    console.log(req.userId);
     res.json({
-        _id:req.body._id
+        _id:req.userId
     })
 })
 

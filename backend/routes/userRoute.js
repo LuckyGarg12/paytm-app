@@ -1,13 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const cors = require("cors");
 const { JWT_SECRET } = require("../config");
 const { userSchema, signinSchema } = require("../schemas");
 const { addUser, getUser } = require("../db_ops");
-
-router.use(cors());
-router.use(express.json());
 
 router.post("/signup", async (req, res) => {
     const body = userSchema.safeParse(req.body);
