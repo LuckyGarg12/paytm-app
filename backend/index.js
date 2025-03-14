@@ -2,6 +2,7 @@ const express = require("express");
 const mainRouter = require("./routes/index");
 const { PORT } = require("./config");
 const cors = require("cors");
+require("express-async-errors")
 
 const app = express();
 

@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
-const { userSchema, signinSchema } = require("../schemas");
-const { addUser, getUser } = require("../db_ops");
+const { userSchema, signinSchema, updateUserSchema } = require("../schemas");
+const { addUser, getUser, updateUser } = require("../db_ops");
+const { authMiddleware } = require("../middleware");
 
 router.post("/signup", async (req, res) => {
     const body = userSchema.safeParse(req.body);
@@ -37,6 +38,22 @@ router.post("/signin", async (req, res) => {
         const token = jwt.sign({_id: user._id}, JWT_SECRET);
         res.json({message: "Signin successful", token: token});
     }
+})
+
+router.put("/update", authMiddleware, async (req, res)=> {
+    const body = updateUserSchema.safeParse(req.body);
+    if (body.success) {
+        const success = await updateUser(req.userId, body.data);
+        if (success) {
+            res.send({
+                "message":"Updated successfully"
+            })
+            return
+        }
+    }
+    res.status(411).json({
+        "Error":"Could not update. Check the input."
+    })
 })
 
 

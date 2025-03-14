@@ -19,7 +19,21 @@ async function getUser(username) {
     return user;
 }
 
+async function updateUser(userId, update) {
+    try {
+        const user = await User.findByIdAndUpdate(userId, update, { new: true });        
+        await user.createHash();
+        await user.save();
+        
+        return true;
+    }
+    catch(err){
+        return false
+    }
+}
+
 module.exports = {
     addUser: addUser,
-    getUser: getUser
+    getUser: getUser,
+    updateUser: updateUser
 }
