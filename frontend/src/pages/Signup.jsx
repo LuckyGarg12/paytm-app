@@ -4,12 +4,15 @@ import InputBox from "../components/InputBox";
 import SubHeading from "../components/SubHeading";
 import Button from "../components/Button";
 import ButtonWarning from "../components/BottomWarning";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
     const firstName = useRef(null)
     const lastName = useRef(null)
     const username = useRef(null)
     const password = useRef(null)
+    const navigate = useNavigate()
 
 
     return(
@@ -24,8 +27,15 @@ export default function Signup() {
                         <InputBox inId={"username"} refer={username} label={"Email"} placeholder={"example@xyz.com"} type={"email"} />
                         <InputBox inId={"password"} refer={password} label={"Password"} placeholder={"Enter Password"} type="password" />
                         <div className="pt-4">
-                            <Button label="Sign Up" onClick={()=> {
-
+                            <Button label="Sign Up" onClick={async ()=> {
+                                const respone = await axios.post("http://localhost:3000/api/v1/user/signup", 
+                                    {username:username.current.value,
+                                     password:password.current.value,
+                                     firstName:firstName.current.value,
+                                     lastName:lastName.current.value
+                                    })
+                                localStorage.setItem("token", respone.data.token)
+                                navigate("/dashboard")
                             }} />
                         </div>
                         <ButtonWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />
