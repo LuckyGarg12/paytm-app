@@ -21,7 +21,7 @@ export default function Users() {
             <div className="font-bold mt-6 text-lg">
                 Users
             </div>
-            <div className="my-2 mb-4">
+            <div className="my-2 mb-2">
                 <input onChange={
                     (e) => {
                         clearTimeout(prevTimeoutId);
@@ -45,8 +45,8 @@ function User({ user }) {
 
     return (
         <div className="flex justify-between">
-            <div className="flex mb-2">
-                <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mr-2">
+            <div className="flex">
+                <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mr-2 mt-1.5">
                     <div className="flex flex-col justify-center text-xl">
                         {user.firstName[0]}
                     </div>
@@ -55,9 +55,9 @@ function User({ user }) {
                     {user.firstName} {user.lastName}
                 </div>
             </div>
-            <div className="flex flex-col justify-center h-full">
+            <div className="flex flex-col justify-center h-full mt-2.5">
                 <Button label={"Send Money"} onClick={(e)=>{
-                    
+                    navigate("/send?id="+user._id+"&name="+user.firstName+" "+user.lastName)
                 }} />
             </div>
         </div>
