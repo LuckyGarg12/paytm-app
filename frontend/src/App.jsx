@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import Signin from "./pages/Signin"
 import Signup from "./pages/Signup"
 import Dashboard from "./pages/Dashboard"
@@ -15,6 +15,7 @@ function App() {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/dashboard" element={<Dashboard />}></Route>
           <Route path="/send" element={<SendMoney />}></Route>
+          <Route path="*" element={<Navigate to={"/signin"} />} />
         </Routes>
       </BrowserRouter>
     </>
