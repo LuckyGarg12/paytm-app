@@ -12,7 +12,7 @@ async function addUser(user) {
         const newUser = new User(user);
         await newUser.createHash();
         const data = await newUser.save();
-        await createAccount(data._id, 1+Math.random()*10000);
+        await createAccount(data._id, Math.floor(1+Math.random()*1000000));
         return data._id;
     }
     return null;
@@ -64,6 +64,11 @@ async function createAccount(userId, balance) {
     catch(err) {
         return null;
     }
+}
+
+async function getBalance(userId) {
+    const account = await Account.findOne({ userId: userId });
+    return account.balance;
 }
 
 async function transfer(req) {
@@ -118,5 +123,6 @@ module.exports = {
     updateUser,
     searchUsers,
     createAccount,
+    getBalance,
     transfer
 }
